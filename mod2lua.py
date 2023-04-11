@@ -110,15 +110,19 @@ def parseScript(folderName, line):
 def TxtToLua(txtFileName):
     with open(txtFileName, 'r', encoding='utf-8') as txt:
         folderName = txtFileName.replace('.txt', '')
-        if os.path.exists(folderName):
-            shutil.rmtree(folderName)
-        os.mkdir(folderName)
+        tmpFolderName = folderName + '.tmp'
+        if os.path.exists(tmpFolderName):
+            shutil.rmtree(tmpFolderName)
+        os.mkdir(tmpFolderName)
         for line in txt:
             line = line.replace('\\"', doubleQuot)
             line = line.replace('\\n', newline)
             line = line.replace('\\t', tab)
             if '"ScriptVersion"' in line:
-                parseScript(folderName, line)
+                parseScript(tmpFolderName, line)
+        if os.path.exists(folderName):
+            shutil.rmtree(folderName)
+        os.rename(tmpFolderName, folderName)
 
 
 def ModToLua(modFileName):
